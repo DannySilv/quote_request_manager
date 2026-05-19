@@ -20,12 +20,14 @@ class QuoteRequestRepository
                 email,
                 sector,
                 quantity,
+                status,
                 message
             ) VALUES (
                 :company,
                 :email,
                 :sector,
                 :quantity,
+                :status,
                 :message
             )
         ';
@@ -46,8 +48,7 @@ class QuoteRequestRepository
     public function findAll(): array
     {
         $sql = '
-            SELECT * FROM quote_requests 
-            WHERE deleted_at IS NULL 
+            SELECT * FROM quote_requests  
             ORDER BY created_at DESC
         ';
 
@@ -63,8 +64,7 @@ class QuoteRequestRepository
     {
         $sql = '
             SELECT * FROM quote_requests 
-            WHERE id = :id 
-            AND deleted_at IS NULL
+            WHERE id = :id
         ';
 
         $stmt = $this->pdo->prepare($sql);
@@ -109,11 +109,31 @@ class QuoteRequestRepository
         ]);
     }
 
+    public function updateStatus(int $id, string $status): void
+    {
+        $sql = '
+            UPDATE quote_requests 
+            SET 
+                status = :status,
+                updated_at = NOW()
+            WHERE id = :id
+        ';
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'status' => $status,
+            'id' => $id
+        ]);
+    }
+
     public function softDelete(int $id): void
     {
         $sql = '
             UPDATE quote_requests 
-            SET deleted_at = NOW() 
+            SET 
+                status = "archived",
+                deleted_at = NOW(),
+                updated_at = NOW() 
             WHERE id = :id
         ';
 
@@ -125,7 +145,10 @@ class QuoteRequestRepository
     {
         $sql = '
             UPDATE quote_requests 
-            SET deleted_at = NULL 
+            SET 
+                status = "new",
+                deleted_at = NULL,
+                updated_at = NOW() 
             WHERE id = :id
         ';
 
@@ -151,6 +174,7 @@ class QuoteRequestRepository
             email: $data['email'],
             sector: $data['sector'],
             quantity: (int) $data['quantity'],
+            status: $data['status'],
             message: $data['message'],
             id: (int) $data['id'],
             createdAt: $data['created_at'],

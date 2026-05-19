@@ -9,6 +9,7 @@ class QuoteRequest
         private string $email,
         private string $sector,
         private int $quantity,
+        private string $status,
         private string $message,
         private ?int $id = null,
         private ?string $createdAt = null,
@@ -38,6 +39,11 @@ class QuoteRequest
     public function getQuantity(): int
     {
         return $this->quantity;
+    }
+
+    public function getStatus(): string
+    {
+        return $this->status;
     }
 
     public function getMessage(): string
@@ -80,6 +86,11 @@ class QuoteRequest
         $this->quantity = $quantity;
     }
 
+    public function setStatus(string $status): void
+    {
+        $this->status = $status;
+    }
+
     public function setMessage(string $message): void
     {
         $this->message = $message;
@@ -104,5 +115,18 @@ class QuoteRequest
         } else {
             return 'Grande';
         }
+    }
+
+    public function getStatusLabel(): string
+    {
+        return match ($this->status) {
+            'new' => 'Nuova',
+            'in_progress' => 'In lavorazione',
+            'completed' => 'Evasa',
+            'archived' => 'Archiviata',
+            'to_restore' => 'Ripristina',
+            'cancelled' => 'Eliminata',
+            default => 'Sconosciuto',
+        };
     }
 }

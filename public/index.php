@@ -38,12 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             email: $data['email'],
             sector: $data['sector'],
             quantity: $data['quantity'],
+            status: 'new',
             message: $data['message']
         );
 
         $quoteRequestRepository->save($quoteRequest);
 
-        header('Location: thank_you.php');
+        header('Location: thank-you.php');
         exit;
     }
 }

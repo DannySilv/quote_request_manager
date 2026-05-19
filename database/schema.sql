@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS quote_requests (
     email VARCHAR(255) NOT NULL,
     sector VARCHAR(50) NOT NULL,
     quantity INT UNSIGNED NOT NULL,
+    status VARCHAR(30) NOT NULL DEFAULT 'new',
     message TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT NULL,
