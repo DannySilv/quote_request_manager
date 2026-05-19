@@ -5,12 +5,12 @@ namespace App\Service;
 class QuoteRequestValidator
 {
     private array $allowedSectors = [
-        'Informatico',
-        'Alimentare',
-        'Industriale',
-        'Sanitario',
-        'Cosmetico',
-        'Enologico'
+        'informatico',
+        'alimentare',
+        'industriale',
+        'sanitario',
+        'cosmetico',
+        'enologico'
     ];
 
     public function validate(array $data): array
