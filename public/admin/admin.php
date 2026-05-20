@@ -24,7 +24,7 @@ $quoteRequests = $quoteRequestRepository->findAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Richieste Preventivo</title>
-    <link rel="stylesheet" href="../../../assets/css/admin-style.css">
+    <link rel="stylesheet" href="../../../assets/css/style.css">
 </head>
 <body>
     <main class="container container-wide">
@@ -81,49 +81,51 @@ $quoteRequests = $quoteRequestRepository->findAll();
 
                                 <td><?= escape($quoteRequest->getCreatedAt() ?? '') ?></td>
 
-                                <td class="actions">
-                                    <a
-                                        href="admin-show.php?id=<?= escape((string) $quoteRequest->getId()) ?>"
-                                        class="button-link"
-                                    >
-                                        Dettaglio
-                                    </a>
-                                    <?php if ($quoteRequest->getStatus() !== 'archived'): ?>
-                                        <form method="post" action="admin-status.php" class="inline-form">
-                                            <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
-                                            <input type="hidden" name="status" value="in_progress">
-                                            <button type="submit">In lavorazione</button>
-                                        </form>
-
-                                        <form method="post" action="admin-status.php" class="inline-form">
-                                            <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
-                                            <input type="hidden" name="status" value="completed">
-                                            <button type="submit">Evadi</button>
-                                        </form>
-
-                                        <form method="post" action="admin-status.php" class="inline-form">
-                                            <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
-                                            <input type="hidden" name="status" value="archived">
-                                            <button type="submit">Archivia</button>
-                                        </form>
-
-                                        <form
-                                            method="post"
-                                            action="admin-delete.php"
-                                            class="inline-form"
-                                            onsubmit="return confirm('Vuoi eliminare definitivamente questa richiesta?');"
+                                <td>
+                                    <div class="actions">
+                                        <a
+                                            href="admin-show.php?id=<?= escape((string) $quoteRequest->getId()) ?>"
+                                            class="button-link secondary"
                                         >
-                                            <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
-                                            <input type="hidden" name="status" value="cancelled">
-                                            <button type="submit" class="danger-button">Elimina</button>
-                                        </form>
-                                    <?php else: ?>
-                                        <form method="post" action="admin-status.php" class="inline-form">
-                                            <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
-                                            <input type="hidden" name="status" value="to_restore">
-                                            <button type="submit" class="restore-button">Ripristina</button>
-                                        </form>
-                                    <?php endif; ?>
+                                            Dettaglio
+                                        </a>
+                                        <?php if ($quoteRequest->getStatus() !== 'archived'): ?>
+                                            <form method="post" action="admin-status.php" class="inline-form">
+                                                <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
+                                                <input type="hidden" name="status" value="in_progress">
+                                                <button type="submit">In lavorazione</button>
+                                            </form>
+
+                                            <form method="post" action="admin-status.php" class="inline-form">
+                                                <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
+                                                <input type="hidden" name="status" value="completed">
+                                                <button type="submit">Evadi</button>
+                                            </form>
+
+                                            <form method="post" action="admin-status.php" class="inline-form">
+                                                <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
+                                                <input type="hidden" name="status" value="archived">
+                                                <button type="submit">Archivia</button>
+                                            </form>
+
+                                            <form
+                                                method="post"
+                                                action="admin-delete.php"
+                                                class="inline-form"
+                                                onsubmit="return confirm('Vuoi eliminare definitivamente questa richiesta?');"
+                                            >
+                                                <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
+                                                <input type="hidden" name="status" value="cancelled">
+                                                <button type="submit" class="danger-button">Elimina</button>
+                                            </form>
+                                        <?php else: ?>
+                                            <form method="post" action="admin-status.php" class="inline-form">
+                                                <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
+                                                <input type="hidden" name="status" value="to_restore">
+                                                <button type="submit" class="restore-button">Ripristina</button>
+                                            </form>
+                                        <?php endif; ?>
+                                    </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>

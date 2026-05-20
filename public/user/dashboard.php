@@ -46,8 +46,8 @@ $quoteRequests = $quoteRequestRepository->findByUserId($currentUser->getId());
         </div>
 
         <nav>
-            <a href="create-request.php">Nuova richiesta</a> |
-            <a href="profile.php">Profilo</a> |
+            <a href="create-request.php">Nuova richiesta</a>
+            <a href="profile.php">Profilo</a>
             <a href="../logout.php">Logout</a>
         </nav>
     </header>
@@ -81,7 +81,9 @@ $quoteRequests = $quoteRequestRepository->findByUserId($currentUser->getId());
                             <td><?= escape($quoteRequest->getCreatedAt() ?? '-') ?></td>
                             <td>
                                 <?php if ($quoteRequest->getStatus() === 'new'): ?>
-                                    <a href="edit-request.php?id=<?= escape((string) $quoteRequest->getId()) ?>">
+                                    <a href="edit-request.php?id=<?= escape((string) $quoteRequest->getId()) ?>"
+                                        class="button-link secondary"
+                                    >
                                         Modifica
                                     </a>
 
