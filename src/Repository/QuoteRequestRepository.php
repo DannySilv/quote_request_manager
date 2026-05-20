@@ -64,6 +64,26 @@ class QuoteRequestRepository
         fn (array $row): QuoteRequest => $this->mapToQuoteRequest($row), $rows);
     }
 
+    public function findById(int $id): ?QuoteRequest
+    {
+        $sql = '
+            SELECT * FROM quote_requests 
+            WHERE id = :id
+            LIMIT 1
+        ';
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['id' => $id]);
+
+        $row = $stmt->fetch();
+
+        if (!$row) {
+            return null;
+        }
+
+        return $this->mapToQuoteRequest($row);
+    }
+
     public function findByUserId(int $user_id): array
     {
         $sql = '
@@ -166,7 +186,7 @@ class QuoteRequestRepository
                 updated_at = NOW()
             WHERE id = :id
             AND user_id = :user_id
-            AND status IN ("new", "in_progress")
+            AND status = "new"
         ';
 
         $stmt = $this->pdo->prepare($sql);
@@ -188,7 +208,7 @@ class QuoteRequestRepository
                 updated_at = NOW()
             WHERE id = :id
             AND user_id = :user_id
-            AND status IN ("new", "in_progress")
+            AND status = "new"
         ';
 
         $stmt = $this->pdo->prepare($sql);

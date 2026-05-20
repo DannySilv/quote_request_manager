@@ -80,7 +80,7 @@ $quoteRequests = $quoteRequestRepository->findByUserId($currentUser->getId());
                             <td><?= escape($quoteRequest->getStatusLabel()) ?></td>
                             <td><?= escape($quoteRequest->getCreatedAt() ?? '-') ?></td>
                             <td>
-                                <?php if (in_array($quoteRequest->getStatus(), ['new', 'in_progress'], true)): ?>
+                                <?php if ($quoteRequest->getStatus() === 'new'): ?>
                                     <a href="edit-request.php?id=<?= escape((string) $quoteRequest->getId()) ?>">
                                         Modifica
                                     </a>

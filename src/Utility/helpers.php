@@ -39,3 +39,13 @@ function requireCustomer(): void
         exit;
     }
 }
+
+function requireAdmin(): void
+{
+    requireLogin();
+
+    if (!currentUserIsAdmin()) {
+        header('Location: /index.php');
+        exit;
+    }
+}

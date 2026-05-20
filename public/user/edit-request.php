@@ -26,7 +26,7 @@ if ($quoteRequest === null) {
     exit;
 }
 
-$isEditable = in_array($quoteRequest->getStatus(), ['new', 'in_progress'], true);
+$isEditable = $quoteRequest->getStatus() === 'new';
 
 if (!$isEditable) {
     header('Location: dashboard.php');
