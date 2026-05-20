@@ -4,8 +4,19 @@ COLLATE utf8mb4_unicode_ci;
 
 USE quote_request_manager;
 
+CREATE TABLE IF NOT EXISTS users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL DEFAULT NULL,
+    deleted_at TIMESTAMP NULL DEFAULT NULL
+);
+
 CREATE TABLE IF NOT EXISTS quote_requests (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
     company VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     sector VARCHAR(50) NOT NULL,
@@ -14,5 +25,9 @@ CREATE TABLE IF NOT EXISTS quote_requests (
     message TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT NULL,
-    deleted_at TIMESTAMP DEFAULT NULL
+    deleted_at TIMESTAMP DEFAULT NULL,
+
+    CONSTRAINT fk_quote_requests_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
 );

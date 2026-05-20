@@ -2,70 +2,66 @@
 
 require_once __DIR__ . '/../autoload.php';
 require_once __DIR__ . '/../src/Utility/helpers.php';
+require_once __DIR__ . '/../src/Utility/auth.php';
 
 use App\Db\DatabaseConnection;
-use App\Model\QuoteRequest;
-use App\Repository\QuoteRequestRepository;
-use App\Service\QuoteRequestSanitizer;
-use App\Service\QuoteRequestValidator;
+use App\Repository\UserRepository;
+use App\Service\UserSanitizer;
+use App\Service\UserValidator;
+
+if (isLoggedIn()) {
+    redirectAfterLogin();
+}
 
 $config = require __DIR__ . '/../config.php';
 
 $pdo = (new DatabaseConnection($config))->connect();
-$quoteRequestRepository = new QuoteRequestRepository($pdo);
+$userRepository = new UserRepository($pdo);
 
 $data = [
-    'company' => '',
     'email' => '',
-    'sector' => '',
-    'quantity' => '',
-    'message' => '',
+    'password' => '',
 ];
 
 $errors = [];
-$sectors = getSectors();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $sanitizer = new QuoteRequestSanitizer();
-    $validator = new QuoteRequestValidator();
+    $sanitizer = new UserSanitizer();
+    $validator = new UserValidator($userRepository);
 
-    $data = $sanitizer->sanitize($_POST);
-    $errors = $validator->validate($data);
+    $data = $sanitizer->sanitizeLogin($_POST);
+    $errors = $validator->validateLogin($data);
 
     if (empty($errors)) {
-        $quoteRequest = new QuoteRequest(
-            company: $data['company'],
-            email: $data['email'],
-            sector: $data['sector'],
-            quantity: $data['quantity'],
-            status: 'new',
-            message: $data['message']
-        );
+        $user = $userRepository->findByEmail($data['email']);
 
-        $quoteRequestRepository->save($quoteRequest);
-
-        header('Location: thank-you.php');
-        exit;
+        if ($user === null || !password_verify($data['password'], $user->getPasswordHash())) {
+            $errors['credentials'] = 'Credenziali non valide.';
+        } else {
+            loginUser($user);
+            redirectAfterLogin();
+        }
     }
 }
 
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Richiesta Preventivo</title>
-    <link rel="stylesheet" href="assets/css/style.css">
+    <title>Login</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
+
     <main class="container">
-        <h1>Richiedi un preventivo</h1>
+        <h1>Accedi</h1>
 
         <?php if (!empty($errors)): ?>
             <div class="alert alert-error">
-                <h2>Si sono verificati i seguenti errori:</h2>
+                <h2>Correggi questi errori:</h2>
+
                 <ul>
                     <?php foreach ($errors as $error): ?>
                         <li><?= escape($error) ?></li>
@@ -74,27 +70,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         <?php endif; ?>
 
-        <form action="index.php" method="POST" novalidate>
-            <div class="field">
-                <label for="company">Azienda</label>
-                <input 
-                    type="text" 
-                    id="company" 
-                    name="company" 
-                    value="<?= escape((string) $data['company']) ?>" 
-                >
-                <?php if (isset($errors['company'])): ?>
-                    <p class="field-error"><?= escape($errors['company']) ?></p>
-                <?php endif; ?>
-            </div>
-
+        <form method="post" action="index.php" novalidate>
             <div class="field">
                 <label for="email">Email</label>
                 <input
                     type="email"
                     id="email"
                     name="email"
-                    value="<?= escape((string) $data['email']) ?>"
+                    value="<?= escape($data['email']) ?>"
                 >
 
                 <?php if (isset($errors['email'])): ?>
@@ -103,50 +86,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="field">
-                <label for="sector">Settore</label>
-                <select id="sector" name="sector">
-                    <option value="">Seleziona un settore</option>
-                    <?php foreach ($sectors as $sectorValue => $sectorLabel): ?>
-                        <option 
-                            value="<?= escape($sectorValue) ?>" 
-                            <?= $data['sector'] === $sectorValue ? 'selected' : '' ?>
-                        >
-                            <?= escape($sectorLabel) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-
-                <?php if (isset($errors['sector'])): ?>
-                    <p class="field-error"><?= escape($errors['sector']) ?></p>
-                <?php endif; ?>
-            </div>
-
-            <div class="field">
-                <label for="quantity">Quantità</label>
+                <label for="password">Password</label>
                 <input
-                    type="number"
-                    id="quantity"
-                    name="quantity"
-                    min="1"
-                    value="<?= escape((string) $data['quantity']) ?>"
+                    type="password"
+                    id="password"
+                    name="password"
                 >
 
-                <?php if (isset($errors['quantity'])): ?>
-                    <p class="field-error"><?= escape($errors['quantity']) ?></p>
+                <?php if (isset($errors['password'])): ?>
+                    <p class="field-error"><?= escape($errors['password']) ?></p>
                 <?php endif; ?>
             </div>
 
-            <div class="field">
-                <label for="message">Messaggio</label>
-                <textarea id="message" name="message"><?= escape((string) $data['message']) ?></textarea>
-
-                <?php if (isset($errors['message'])): ?>
-                    <p class="field-error"><?= escape($errors['message']) ?></p>
-                <?php endif; ?>
-            </div>
-
-            <button type="submit">Invia richiesta</button>
+            <button type="submit">Accedi</button>
         </form>
+
+        <p>
+            Non hai un account? <a href="register.php">Registrati</a>
+        </p>
     </main>
 
 </body>

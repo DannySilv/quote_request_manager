@@ -14,7 +14,7 @@ $quoteRequestRepository = new QuoteRequestRepository($pdo);
 $id = (int) ($_GET['id'] ?? 0);
 
 $quoteRequest = $id > 0
-    ? $quoteRequestRepository->findById($id)
+    ? $quoteRequestRepository->findByUserId($id)
     : null;
 
 ?>

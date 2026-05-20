@@ -5,6 +5,7 @@ namespace App\Model;
 class QuoteRequest 
 {
     public function __construct(
+        private int $userId,
         private string $company,
         private string $email,
         private string $sector,
@@ -20,6 +21,11 @@ class QuoteRequest
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUserId(): int
+    {
+        return $this->userId;
     }
 
     public function getCompany(): string

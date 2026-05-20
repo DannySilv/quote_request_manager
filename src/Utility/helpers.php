@@ -16,3 +16,26 @@ function getSectors(): array
         'enologico' => 'Enologico',
     ];
 }
+
+function generatePublicToken(): string
+{
+    return bin2hex(random_bytes(16));
+}
+
+function requireLogin(): void
+{
+    if (!isLoggedIn()) {
+        header('Location: /index.php');
+        exit;
+    }
+}
+
+function requireCustomer(): void
+{
+    requireLogin();
+
+    if (currentUserIsAdmin()) {
+        header('Location: /admin/admin.php');
+        exit;
+    }
+}

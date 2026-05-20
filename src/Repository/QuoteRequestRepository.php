@@ -16,6 +16,7 @@ class QuoteRequestRepository
     {
         $sql = '
             INSERT INTO quote_requests (
+                user_id,
                 company,
                 email,
                 sector,
@@ -23,6 +24,7 @@ class QuoteRequestRepository
                 status,
                 message
             ) VALUES (
+                :user_id,
                 :company,
                 :email,
                 :sector,
@@ -35,10 +37,12 @@ class QuoteRequestRepository
         $stmt = $this->pdo->prepare($sql);
 
         $stmt->execute([
+            'user_id' => $quoteRequest->getUserId(),
             'company' => $quoteRequest->getCompany(),
             'email' => $quoteRequest->getEmail(),
             'sector' => $quoteRequest->getSector(),
             'quantity' => $quoteRequest->getQuantity(),
+            'status' => 'new',
             'message' => $quoteRequest->getMessage(),
         ]);
 
@@ -60,15 +64,41 @@ class QuoteRequestRepository
         fn (array $row): QuoteRequest => $this->mapToQuoteRequest($row), $rows);
     }
 
-    public function findById(int $id): ?QuoteRequest
+    public function findByUserId(int $user_id): array
     {
         $sql = '
             SELECT * FROM quote_requests 
-            WHERE id = :id
+            WHERE user_id = :user_id
+            ORDER BY created_at DESC
         ';
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(['id' => $id]);
+        $stmt->execute(['user_id' => $user_id]);
+
+        $rows = $stmt->fetchAll();
+
+        return array_map(
+            fn (array $rows): QuoteRequest => $this->mapToQuoteRequest($rows), 
+            $rows
+        );
+    }
+
+    public function findByIdAndUserId(int $id, int $userId): ?QuoteRequest
+    {
+        $sql = '
+            SELECT *
+            FROM quote_requests
+            WHERE id = :id
+            AND user_id = :user_id
+            LIMIT 1
+        ';
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->execute([
+            'id' => $id,
+            'user_id' => $userId,
+        ]);
 
         $row = $stmt->fetch();
 
@@ -126,6 +156,49 @@ class QuoteRequestRepository
         ]);
     }
 
+    public function updateFromUser(int $id, int $userId, int $quantity, string $message): void 
+    {
+        $sql = '
+            UPDATE quote_requests
+            SET
+                quantity = :quantity,
+                message = :message,
+                updated_at = NOW()
+            WHERE id = :id
+            AND user_id = :user_id
+            AND status IN ("new", "in_progress")
+        ';
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->execute([
+            'id' => $id,
+            'user_id' => $userId,
+            'quantity' => $quantity,
+            'message' => $message,
+        ]);
+    }
+
+    public function cancelFromUser(int $id, int $userId): void
+    {
+        $sql = '
+            UPDATE quote_requests
+            SET
+                status = "cancelled",
+                updated_at = NOW()
+            WHERE id = :id
+            AND user_id = :user_id
+            AND status IN ("new", "in_progress")
+        ';
+
+        $stmt = $this->pdo->prepare($sql);
+
+        $stmt->execute([
+            'id' => $id,
+            'user_id' => $userId,
+        ]);
+    }
+
     public function softDelete(int $id): void
     {
         $sql = '
@@ -170,6 +243,7 @@ class QuoteRequestRepository
     private function mapToQuoteRequest(array $data): QuoteRequest
     {
         return new QuoteRequest(
+            userId: (int) $data['user_id'],
             company: $data['company'],
             email: $data['email'],
             sector: $data['sector'],

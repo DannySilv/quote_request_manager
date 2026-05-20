@@ -10,7 +10,7 @@
     <main class="container">
         <h1>Grazie per la tua richiesta!</h1>
         <p>La tua richiesta di preventivo è stata inviata con successo. Ti contatteremo al più presto.</p>
-        <a href="index.php" class="button">Invia un'altra richiesta</a>
+        <a href="dashboard.php" class="button">Invia un'altra richiesta</a>
     </main>
 </body>
 </html>
