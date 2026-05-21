@@ -1,10 +1,19 @@
 document.addEventListener("DOMContentLoaded", () => {
-    setupPasswordToggles();
-    setupSubmitLock();
-    setupConfirmActions();
-    setupQuoteRequestValidation();
-    setupTableSearch();
+    safeRun(setupPasswordToggles);
+    safeRun(setupApiForms);
+    safeRun(setupSubmitLock);
+    safeRun(setupConfirmActions);
+    safeRun(setupQuoteRequestValidation);
+    safeRun(setupTableSearch);
 });
+
+const safeRun = (callback) => {
+    try {
+        callback();
+    } catch (error) {
+        console.error("Errore JS:", error);
+    }
+};
 
 const setupPasswordToggles = () => {
     const passwordFields = document.querySelectorAll('input[type="password"]');
@@ -36,6 +45,10 @@ const setupSubmitLock = () => {
     const forms = document.querySelectorAll("form");
 
     forms.forEach((form) => {
+        if (form.matches("[data-api-form]")) {
+            return;
+        }
+
         form.addEventListener("submit", () => {
             const submitButton = form.querySelector("button[type='submit']");
 
@@ -167,6 +180,64 @@ const setupTableSearch = () => {
             const matches = text.includes(query);
 
             row.style.display = matches ? "" : "none";
+        });
+    });
+};
+
+const setupApiForms = () => {
+    const forms = document.querySelectorAll("[data-api-form]");
+
+    forms.forEach((form) => {
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const confirmMessage = form.dataset.confirm;
+
+            if (confirmMessage && !window.confirm(confirmMessage)) {
+                return;
+            }
+
+            const submitButton = form.querySelector("button[type='submit']");
+            const originalText = submitButton ? submitButton.textContent : "";
+
+            if (submitButton) {
+                submitButton.disabled = true;
+                submitButton.textContent = "Attendere...";
+            }
+
+            try {
+                const formData = new FormData(form);
+                const payload = Object.fromEntries(formData.entries());
+
+                const response = await fetch(form.dataset.apiUrl, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok || result.success !== true) {
+                    throw new Error(result.message || "Errore durante l'operazione.");
+                }
+
+                if (form.dataset.successReload === "true") {
+                    window.location.reload();
+                    return;
+                }
+
+                alert(result.message || "Operazione completata.");
+            } catch (error) {
+                alert(error.message || "Errore imprevisto.");
+
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = originalText;
+                }
+            }
         });
     });
 };

@@ -95,19 +95,41 @@ $quoteRequests = $quoteRequestRepository->findAll();
                                             Dettaglio
                                         </a>
                                         <?php if ($quoteRequest->getStatus() !== 'archived'): ?>
-                                            <form method="post" action="admin-status.php" class="inline-form">
+                                            <form 
+                                                method="post" 
+                                                action="admin-status.php" 
+                                                class="inline-form"
+                                                data-api-form
+                                                data-api-url="../api/admin/status.php"
+                                                data-success-reload="true"
+                                            >
                                                 <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
                                                 <input type="hidden" name="status" value="in_progress">
                                                 <button type="submit">In lavorazione</button>
                                             </form>
 
-                                            <form method="post" action="admin-status.php" class="inline-form">
+                                            <form
+                                                method="post"
+                                                action="admin-status.php"
+                                                class="inline-form"
+                                                data-api-form
+                                                data-api-url="../api/admin/status.php"
+                                                data-success-reload="true"
+                                            >
                                                 <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
                                                 <input type="hidden" name="status" value="completed">
                                                 <button type="submit">Evadi</button>
                                             </form>
 
-                                            <form method="post" action="admin-status.php" class="inline-form">
+                                            <form
+                                                method="post"
+                                                action="admin-status.php"
+                                                class="inline-form"
+                                                data-api-form
+                                                data-api-url="../api/admin/status.php"
+                                                data-success-reload="true"
+                                                data-confirm="Vuoi archiviare questa richiesta?"
+                                            >
                                                 <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
                                                 <input type="hidden" name="status" value="archived">
                                                 <button type="submit">Archivia</button>
@@ -115,8 +137,11 @@ $quoteRequests = $quoteRequestRepository->findAll();
 
                                             <form
                                                 method="post"
-                                                action="admin-delete.php"
+                                                action="admin-status.php"
                                                 class="inline-form"
+                                                data-api-form
+                                                data-api-url="../api/admin/status.php"
+                                                data-success-reload="true"
                                                 data-confirm="Vuoi eliminare definitivamente questa richiesta?"
                                             >
                                                 <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
@@ -124,7 +149,15 @@ $quoteRequests = $quoteRequestRepository->findAll();
                                                 <button type="submit" class="danger-button">Elimina</button>
                                             </form>
                                         <?php else: ?>
-                                            <form method="post" action="admin-status.php" class="inline-form">
+                                            <form
+                                                method="post"
+                                                action="admin-status.php"
+                                                class="inline-form"
+                                                data-api-form
+                                                data-api-url="../api/admin/status.php"
+                                                data-success-reload="true"
+                                                data-confirm="Vuoi ripristinare questa richiesta?"
+                                            >
                                                 <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
                                                 <input type="hidden" name="status" value="to_restore">
                                                 <button type="submit" class="restore-button">Ripristina</button>
