@@ -83,45 +83,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-<main class="container">
-    <p>
-        <a href="dashboard.php">← Torna alla dashboard</a>
-    </p>
+    <main class="container">
+        <p>
+            <a href="dashboard.php">← Torna alla dashboard</a>
+        </p>
 
-    <h1>Modifica richiesta #<?= escape((string) $quoteRequest->getId()) ?></h1>
+        <h1>Modifica richiesta #<?= escape((string) $quoteRequest->getId()) ?></h1>
 
-    <?php if (!empty($errors)): ?>
-        <div class="alert alert-error">
-            <ul>
-                <?php foreach ($errors as $error): ?>
-                    <li><?= escape($error) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    <?php endif; ?>
+        <?php if (!empty($errors)): ?>
+            <div class="alert alert-error">
+                <ul>
+                    <?php foreach ($errors as $error): ?>
+                        <li><?= escape($error) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
 
-    <form method="post" action="edit-request.php" novalidate>
-        <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
+        <form method="post" action="edit-request.php" data-validate= "quote-request" novalidate>
+            <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
 
-        <div class="field">
-            <label for="quantity">Quantità</label>
-            <input
-                type="number"
-                id="quantity"
-                name="quantity"
-                min="1"
-                value="<?= escape((string) $data['quantity']) ?>"
-            >
-        </div>
+            <div class="field">
+                <label for="quantity">Quantità</label>
+                <input
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    min="1"
+                    value="<?= escape((string) $data['quantity']) ?>"
+                >
+            </div>
 
-        <div class="field">
-            <label for="message">Messaggio</label>
-            <textarea id="message" name="message"><?= escape((string) $data['message']) ?></textarea>
-        </div>
+            <div class="field">
+                <label for="message">Messaggio</label>
+                <textarea id="message" name="message"><?= escape((string) $data['message']) ?></textarea>
+            </div>
 
-        <button type="submit">Salva modifiche</button>
-    </form>
-</main>
+            <button type="submit">Salva modifiche</button>
+        </form>
+    </main>
 
+    <script src="../assets/js/app.js" defer></script>
 </body>
 </html>

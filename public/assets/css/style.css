@@ -435,6 +435,27 @@ small {
     color: var(--muted);
 }
 
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 90px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    min-height: auto;
+    padding: 6px 10px;
+    font-size: 13px;
+}
+
+.input-error {
+    border-color: #b00020;
+}
+
 @media (max-width: 900px) {
     .container {
         padding: 24px;

@@ -128,5 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Hai già un account? <a href="index.php">Accedi</a>
         </p>
     </main>
+
+    <script src="assets/js/app.js" defer></script>
 </body>
 </html>

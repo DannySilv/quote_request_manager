@@ -24,7 +24,7 @@ $quoteRequests = $quoteRequestRepository->findAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Richieste Preventivo</title>
-    <link rel="stylesheet" href="../../../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 </head>
 <body>
     <main class="container container-wide">
@@ -44,8 +44,13 @@ $quoteRequests = $quoteRequestRepository->findAll();
                 Nessuna richiesta presente.
             </div>
         <?php else: ?>
+            <input
+                type="search"
+                data-table-search
+                placeholder="Cerca per azienda, email, settore, stato..."
+            >
             <div class="table-wrapper">
-                <table class="admin-table">
+                <table class="admin-table" data-searchable-table>
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -112,7 +117,7 @@ $quoteRequests = $quoteRequestRepository->findAll();
                                                 method="post"
                                                 action="admin-delete.php"
                                                 class="inline-form"
-                                                onsubmit="return confirm('Vuoi eliminare definitivamente questa richiesta?');"
+                                                data-confirm="Vuoi eliminare definitivamente questa richiesta?"
                                             >
                                                 <input type="hidden" name="id" value="<?= escape((string) $quoteRequest->getId()) ?>">
                                                 <input type="hidden" name="status" value="cancelled">
@@ -134,6 +139,8 @@ $quoteRequests = $quoteRequestRepository->findAll();
             </div>
         <?php endif; ?>
     </main>
+
+    <script src="../assets/js/app.js" defer></script>
 
 </body>
 </html>

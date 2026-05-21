@@ -12,5 +12,7 @@
         <p>La tua richiesta di preventivo è stata inviata con successo. Ti contatteremo al più presto.</p>
         <a href="dashboard.php" class="button">Invia un'altra richiesta</a>
     </main>
+
+    <script src="../assets/js/app.js" defer></script>
 </body>
 </html>

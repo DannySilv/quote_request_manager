@@ -80,81 +80,82 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 
-<main class="container">
-    <p>
-        <a href="dashboard.php">← Torna alla dashboard</a>
-    </p>
-    <section class="detail-card">
-        <h2>Nuova richiesta preventivo</h2>
-    
-        <?php if (!empty($errors)): ?>
-            <div class="alert alert-error">
-                <h2>Correggi questi errori:</h2>
+    <main class="container">
+        <p>
+            <a href="dashboard.php">← Torna alla dashboard</a>
+        </p>
+        <section class="detail-card">
+            <h2>Nuova richiesta preventivo</h2>
+        
+            <?php if (!empty($errors)): ?>
+                <div class="alert alert-error">
+                    <h2>Correggi questi errori:</h2>
 
-                <ul>
-                    <?php foreach ($errors as $error): ?>
-                        <li><?= escape($error) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-        <?php endif; ?>
+                    <ul>
+                        <?php foreach ($errors as $error): ?>
+                            <li><?= escape($error) ?></li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
 
-        <form method="post" action="create-request.php" novalidate>
-            <div class="field">
-                <label for="company">Azienda</label>
-                <input
-                    type="text"
-                    id="company"
-                    name="company"
-                    value="<?= escape((string) $data['company']) ?>"
-                >
-            </div>
+            <form method="post" action="create-request.php" data-validate= "quote-request" novalidate>
+                <div class="field">
+                    <label for="company">Azienda</label>
+                    <input
+                        type="text"
+                        id="company"
+                        name="company"
+                        value="<?= escape((string) $data['company']) ?>"
+                    >
+                </div>
 
-            <div class="field">
-                <label>Email account</label>
-                <input
-                    type="email"
-                    value="<?= escape($currentUser->getEmail()) ?>"
-                    disabled
-                >
-            </div>
+                <div class="field">
+                    <label>Email account</label>
+                    <input
+                        type="email"
+                        value="<?= escape($currentUser->getEmail()) ?>"
+                        disabled
+                    >
+                </div>
 
-            <div class="field">
-                <label for="sector">Settore</label>
-                <select id="sector" name="sector">
-                    <option value="">Seleziona un settore</option>
+                <div class="field">
+                    <label for="sector">Settore</label>
+                    <select id="sector" name="sector">
+                        <option value="">Seleziona un settore</option>
 
-                    <?php foreach ($sectors as $sectorValue => $sectorLabel): ?>
-                        <option
-                            value="<?= escape($sectorValue) ?>"
-                            <?= $data['sector'] === $sectorValue ? 'selected' : '' ?>
-                        >
-                            <?= escape($sectorLabel) ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
+                        <?php foreach ($sectors as $sectorValue => $sectorLabel): ?>
+                            <option
+                                value="<?= escape($sectorValue) ?>"
+                                <?= $data['sector'] === $sectorValue ? 'selected' : '' ?>
+                            >
+                                <?= escape($sectorLabel) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
-            <div class="field">
-                <label for="quantity">Quantità</label>
-                <input
-                    type="number"
-                    id="quantity"
-                    name="quantity"
-                    min="1"
-                    value="<?= escape((string) $data['quantity']) ?>"
-                >
-            </div>
+                <div class="field">
+                    <label for="quantity">Quantità</label>
+                    <input
+                        type="number"
+                        id="quantity"
+                        name="quantity"
+                        min="1"
+                        value="<?= escape((string) $data['quantity']) ?>"
+                    >
+                </div>
 
-            <div class="field">
-                <label for="message">Messaggio</label>
-                <textarea id="message" name="message"><?= escape((string) $data['message']) ?></textarea>
-            </div>
+                <div class="field">
+                    <label for="message">Messaggio</label>
+                    <textarea id="message" name="message"><?= escape((string) $data['message']) ?></textarea>
+                </div>
 
-            <button type="submit">Invia richiesta</button>
-        </form>
-    </section>
-</main>
+                <button type="submit">Invia richiesta</button>
+            </form>
+        </section>
+    </main>
 
+    <script src="../assets/js/app.js" defer></script>
 </body>
 </html>
